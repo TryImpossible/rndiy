@@ -105,8 +105,11 @@ android {
         applicationId "com.rndiy"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode project.property("VERSION_CODE").toString().toInteger()
+        versionName project.property("VERSION_NAME").toString()
+//        ndk {
+//            abiFilters project.property("ABI_FILTERS").toString().split(",")
+//        }
     }
     splits {
         abi {
@@ -116,10 +119,33 @@ android {
             include "armeabi-v7a", "x86", "arm64-v8a", "x86-64"
         }
     }
+    signingConfigs {
+        Properties properties = new Properties()
+        InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream() ;
+        properties.load(inputStream)
+
+        debug {
+            storeFile file(properties.getProperty('storeFile.debug'))
+            storePassword properties.getProperty('storePassword.debug')
+            keyAlias properties.getProperty('keyAlias.debug')
+            keyPassword properties.getProperty('keyPassword.debug')
+        }
+        release {
+            storeFile file(properties.getProperty('storeFile.release'))
+            storePassword properties.getProperty('storePassword.release')
+            keyAlias properties.getProperty('keyAlias.release')
+            keyPassword properties.getProperty('keyPassword.release')
+        }
+
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
