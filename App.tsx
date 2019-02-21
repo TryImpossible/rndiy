@@ -15,7 +15,6 @@ const instructions = Platform.select({
 
 export default class App extends Component {
   public render() {
-    console.log('test husky');
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>Welcome to React Native!</Text>
