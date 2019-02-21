@@ -1,0 +1,26 @@
+/* https://palantir.github.io/tslint/usage/configuration/ */
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended", "tslint-react", "tslint-eslint-rules", "tslint-config-prettier"],
+  "linterOptions": {
+    "exclude": ["__tests__", "node_modules"]
+  },
+  "jsRules": {
+    "max-line-length": {
+      "options": [120]
+    }
+  },
+  /* https://palantir.github.io/tslint/rules/ */
+  "rules": {
+    "prettier": [true, ".prettierrc.js"] /* 开启prettier格式化，并使用.prettierrc.js规则  */,
+    "max-line-length": {
+      "options": [120]
+    },
+    "no-console": {
+      "severity": "error",
+      "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
+    },
+    "object-literal-sort-keys": false
+  },
+  "rulesDirectory": ["tslint-plugin-prettier"]
+}
