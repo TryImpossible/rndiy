@@ -1,0 +1,15 @@
+{
+  "editor.tabSize": 2, // 一个制表符等于的空格数
+  "editor.minimap.enabled": false, // 隐藏右侧小地图
+  "explorer.autoReveal": false, // 控制资源管理器是否应在打开文件时自动显示它们
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "editor.formatOnSave": true, // 保存时格式化代码
+  "javascript.format.enable": false,
+  "workbench.colorTheme": "Visual Studio Light", // 主题
+  "breadcrumbs.enabled": true, // 显示文件路径位置
+  "editor.renderWhitespace": "all", // 文件保存时去除末尾空格
+  "files.trimTrailingWhitespace": true, // 启用后，将在保存文件时剪裁尾随空格
+  "prettier.eslintIntegration": true, // 开启prettier配合eslint使用
+  "prettier.tslintIntegration": true, // 开启prettier配合tsslint使用
+  "tslint.alwaysShowRuleFailuresAsWarnings": false // tslint显示检测失败为waring
+}
