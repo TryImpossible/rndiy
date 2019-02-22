@@ -7,7 +7,7 @@
     "run-ios": "node node_modules/react-native/local-cli/cli.js run-ios",
     "run-android": "node node_modules/react-native/local-cli/cli.js run-android",
     "test": "node node_modules/jest/bin/jest.js",
-    "tsc": "node node_modules/typescript/bin/tsc",
+    "tsc": "node node_modules/typescript/lib/tsc.js",
     "prettier": "node node_modules/prettier/bin-prettier.js",
     "lint": "node node_modules/tslint/bin/tslint -p ./tsconfig.json -c tslint.json"
   },
