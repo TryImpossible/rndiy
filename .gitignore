@@ -58,8 +58,8 @@ buck-out/
 
 # Jest
 .jest
+coverage
 
 # rndiy
 dist
 private
-__test__

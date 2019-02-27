@@ -1,7 +1,7 @@
 module.exports = {
   linters: {
     '*.{ts,tsx,d.ts}': [
-      'node node_modules/tslint/bin/tslint -p ./tsconfig.json -c tslint.json --fix',
+      'node node_modules/tslint/bin/tslint -p ./tsconfig.json -c tslint.json -e __tests__/* --fix',
       'node node_modules/prettier/bin-prettier.js --write',
       'git add'
     ],

@@ -13,13 +13,29 @@ const instructions = Platform.select({
   android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu'
 });
 
-export default class App extends Component {
+interface AppState {
+  welcome: string;
+}
+
+export default class App extends Component<{}, AppState> {
+  public onPress: () => void;
+
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      welcome: 'Welcome to React Native!'
+    };
+    this.onPress = () => this.setState({ welcome: 'Welcome to Use Jest!' });
+  }
+
   public render() {
+    const { welcome } = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
+        <Text style={styles.welcome}>{welcome}</Text>
         <Text style={styles.instructions}>To get started, edit App.js</Text>
         <Text style={styles.instructions}>{instructions}</Text>
+        <Text onPress={this.onPress}>点我吖</Text>
       </View>
     );
   }
