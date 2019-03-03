@@ -21,7 +21,8 @@
       "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
     },
     "object-literal-sort-keys": false,
-    "interface-name": false
+    "interface-name": false,
+    "jsx-no-lambda": false
     // "member-ordering": [
     //   // 设置修饰符顺序
     //   true,

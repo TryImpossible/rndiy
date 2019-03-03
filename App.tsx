@@ -25,7 +25,10 @@ export default class App extends Component<{}, AppState> {
     this.state = {
       welcome: 'Welcome to React Native!'
     };
-    this.onPress = () => this.setState({ welcome: 'Welcome to Use Jest!' });
+    this.onPress = () => {
+      this.setState({ welcome: 'Welcome to Use Jest!' });
+      console.warn('哈哈😄哈哈');
+    };
   }
 
   public render() {
@@ -35,7 +38,9 @@ export default class App extends Component<{}, AppState> {
         <Text style={styles.welcome}>{welcome}</Text>
         <Text style={styles.instructions}>To get started, edit App.js</Text>
         <Text style={styles.instructions}>{instructions}</Text>
-        <Text onPress={this.onPress}>点我吖</Text>
+        <Text testID="hello_button" onPress={this.onPress}>
+          点我吖
+        </Text>
       </View>
     );
   }

@@ -47,6 +47,7 @@ Cmd+D or shake for dev menu
   </Text>
   <Text
     onPress={[Function]}
+    testID="hello_button"
   >
     点我吖
   </Text>
@@ -100,6 +101,7 @@ Cmd+D or shake for dev menu
   </Text>
   <Text
     onPress={[Function]}
+    testID="hello_button"
   >
     点我吖
   </Text>
