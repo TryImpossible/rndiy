@@ -36,6 +36,7 @@
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* rndiyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* rndiyTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
+		4CBEB717222EADE900899090 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C408406222BB27900B64646 /* libRNGestureHandler.a */; };
 		4CC6EE872216E22800F5808D /* AppModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CC6EE862216E22800F5808D /* AppModule.m */; };
 		59BA2B43782003C911168D15 /* libPods-rndiy-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 85772CF8DBF711829D03E9DF /* libPods-rndiy-tvOS.a */; };
 		62514BC3AD16C759F47F0A91 /* libPods-rndiyTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57286F6AE75E8BB0F2C5879F /* libPods-rndiyTests.a */; };
@@ -258,6 +259,13 @@
 			remoteGlobalIDString = 3D3CD9321DE5FBEE00167DC4;
 			remoteInfo = "cxxreact-tvOS";
 		};
+		4C408405222BB27900B64646 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4C4083DD222BB27900B64646 /* RNGestureHandler.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNGestureHandler;
+		};
 		4CC6EE472216DFDA00F5808D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 146833FF1AC3E56700842450 /* React.xcodeproj */;
@@ -358,6 +366,7 @@
 		2D369AF4BDA7609BE0AFBF88 /* Pods-rndiy-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rndiy-tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-rndiy-tvOS/Pods-rndiy-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		33082B9938FC4E731F90476B /* Pods-rndiy-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rndiy-tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-rndiy-tvOS/Pods-rndiy-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		4A93A44E3FC3CE176D8B678E /* Pods-rndiy-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rndiy-tvOSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-rndiy-tvOSTests/Pods-rndiy-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		4C4083DD222BB27900B64646 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		4CC6EE852216E22800F5808D /* AppModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppModule.h; path = rndiy/modules/AppModule.h; sourceTree = "<group>"; };
 		4CC6EE862216E22800F5808D /* AppModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppModule.m; path = rndiy/modules/AppModule.m; sourceTree = "<group>"; };
 		546F72244673A5BA97230B2F /* Pods-rndiyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rndiyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-rndiyTests/Pods-rndiyTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -389,6 +398,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CBEB717222EADE900899090 /* libRNGestureHandler.a in Frameworks */,
 				ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
@@ -581,6 +591,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		4C4083DE222BB27900B64646 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4C408406222BB27900B64646 /* libRNGestureHandler.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4CC6EE842216E1FC00F5808D /* modules */ = {
 			isa = PBXGroup;
 			children = (
@@ -623,6 +641,7 @@
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
+				4C4083DD222BB27900B64646 /* RNGestureHandler.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -838,6 +857,10 @@
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
+				{
+					ProductGroup = 4C4083DE222BB27900B64646 /* Products */;
+					ProjectRef = 4C4083DD222BB27900B64646 /* RNGestureHandler.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -1046,6 +1069,13 @@
 			remoteRef = 3DAD3EAA1DF850E9000B6D8A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		4C408406222BB27900B64646 /* libRNGestureHandler.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNGestureHandler.a;
+			remoteRef = 4C408405222BB27900B64646 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		4CC6EE482216DFDA00F5808D /* libjsi.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1158,7 +1188,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		1591AD0D4C262FBDB7C31712 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1382,7 +1412,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = NE255JBW6J;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../node_modules/react-native/React\"/**";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../node_modules/react-native/React\"/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+				);
 				INFOPLIST_FILE = rndiy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -1403,7 +1436,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NE255JBW6J;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../node_modules/react-native/React\"/**";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../node_modules/react-native/React\"/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+				);
 				INFOPLIST_FILE = rndiy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (

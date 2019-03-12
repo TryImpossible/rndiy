@@ -22,7 +22,10 @@
     },
     "object-literal-sort-keys": false,
     "interface-name": false,
-    "jsx-no-lambda": false
+    "jsx-no-lambda": false,
+    "lines-between-class-members": true,
+    "no-unused-expression": false,
+    "member-access": [true, "no-public"]
     // "member-ordering": [
     //   // 设置修饰符顺序
     //   true,
@@ -47,5 +50,5 @@
     //   }
     // ]
   },
-  "rulesDirectory": ["tslint-plugin-prettier"]
+  "rulesDirectory": ["node_modules/tslint-lines-between-class-members", "tslint-plugin-prettier"]
 }
