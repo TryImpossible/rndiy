@@ -1,0 +1,98 @@
+diff --git a/apps/Settings/res/values-zh-rCN/arrays.xml b/apps/Settings/res/values-zh-rCN/arrays.xml
+old mode 100644
+new mode 100755
+index e5f0f54..ba47a51
+--- a/apps/Settings/res/values-zh-rCN/arrays.xml
++++ b/apps/Settings/res/values-zh-rCN/arrays.xml
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<!--
++<!--
+ /*
+ **
+ ** Copyright 2007 The Android Open Source Project
+@@ -37,6 +37,7 @@
+     <item msgid="7489864775127957179">"5分钟"</item>
+     <item msgid="2314124409517439288">"10分钟"</item>
+     <item msgid="6864027152847611413">"30分钟"</item>
++    <item>"永不休眠"</item>
+   </string-array>
+   <string-array name="dream_timeout_entries">
+     <item msgid="3149294732238283185">"永不"</item>
+diff --git a/apps/Settings/res/values/arrays.xml b/apps/Settings/res/values/arrays.xml
+old mode 100644
+new mode 100755
+index e5f1988..2a6675e
+--- a/apps/Settings/res/values/arrays.xml
++++ b/apps/Settings/res/values/arrays.xml
+@@ -48,6 +48,7 @@
+         <item>5 minutes</item>
+         <item>10 minutes</item>
+         <item>30 minutes</item>
++        <item>Never</item>
+     </string-array>
+
+     <!-- Do not translate. -->
+@@ -66,6 +67,8 @@
+         <item>600000</item>
+         <!-- Do not translate. -->
+         <item>1800000</item>
++        <!-- Do not translate. -->
++        <item>0</item>
+     </string-array>
+
+     <!-- Display settings.  The delay in inactivity before the dream is shown. These are shown in a list dialog. -->
+diff --git a/apps/Settings/src/com/android/settings/DisplaySettings.java b/apps/Settings/src/com/android/settings/DisplaySettings.java
+index 7a95155..d521758 100755
+--- a/apps/Settings/src/com/android/settings/DisplaySettings.java
++++ b/apps/Settings/src/com/android/settings/DisplaySettings.java
+@@ -268,26 +268,44 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
+     }
+
+     private void updateTimeoutPreferenceDescription(long currentTimeout) {
++
+         ListPreference preference = mScreenTimeoutPreference;
+         String summary;
++
++        /* never screen off begin */
++        final CharSequence[] entries = preference.getEntries();
++        final CharSequence[] values = preference.getEntryValues();
++        /* never screen off end */
++
+         if (currentTimeout < 0) {
+             // Unsupported value
+-            summary = "";
++
++            /* never screen off begin */
++            if (entries != null || entries.length != 0){
++                summary = (entries[entries.length-1]).toString();
++            }else{
++                summary = "";
++            }
++            /* never screen off end */
+         } else {
+-            final CharSequence[] entries = preference.getEntries();
+-            final CharSequence[] values = preference.getEntryValues();
++
+             if (entries == null || entries.length == 0) {
+                 summary = "";
+             } else {
+                 int best = 0;
+                 for (int i = 0; i < values.length; i++) {
+                     long timeout = Long.parseLong(values[i].toString());
+-                    if (currentTimeout >= timeout) {
++                    if (currentTimeout == timeout) {
+                         best = i;
+                     }
+                 }
+-                summary = preference.getContext().getString(R.string.screen_timeout_summary,
++
++                if (entries.length != 0) {
++                    summary = preference.getContext().getString(R.string.screen_timeout_summary,
+                         entries[best]);
++                } else {
++                    summary = "";
++                }
+             }
+         }
+         preference.setSummary(summary);

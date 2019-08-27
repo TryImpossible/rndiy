@@ -1,0 +1,730 @@
+diff --git a/base/core/java/android/net/EthernetInfo.aidl b/base/core/java/android/net/EthernetInfo.aidl
+new file mode 100755
+index 0000000..5281c3f
+--- /dev/null
++++ b/base/core/java/android/net/EthernetInfo.aidl
+@@ -0,0 +1,3 @@
++package android.net;
++
++parcelable EthernetInfo;
+diff --git a/base/core/java/android/net/EthernetInfo.java b/base/core/java/android/net/EthernetInfo.java
+new file mode 100755
+index 0000000..5b99a11
+--- /dev/null
++++ b/base/core/java/android/net/EthernetInfo.java
+@@ -0,0 +1,91 @@
++package android.net;
++
++import android.os.Parcel;
++import android.os.Parcelable;
++
++public class EthernetInfo implements Parcelable {
++
++    private String ipAddress;
++    private String gateway;
++    private String netmask;
++    private String dns1;
++    private String dns2;
++
++    public EthernetInfo() {
++        super();
++    }
++
++    protected EthernetInfo(Parcel in) {
++        ipAddress = in.readString();
++        gateway = in.readString();
++        netmask = in.readString();
++        dns1 = in.readString();
++        dns2 = in.readString();
++    }
++
++    public static final Creator<EthernetInfo> CREATOR = new Creator<EthernetInfo>() {
++        @Override
++        public EthernetInfo createFromParcel(Parcel in) {
++            return new EthernetInfo(in);
++        }
++
++        @Override
++        public EthernetInfo[] newArray(int size) {
++            return new EthernetInfo[size];
++        }
++    };
++
++    public String getIpAddress() {
++        return ipAddress;
++    }
++
++    public void setIpAddress(String ipAddress) {
++        this.ipAddress = ipAddress;
++    }
++
++    public String getGateway() {
++        return gateway;
++    }
++
++    public void setGateway(String gateway) {
++        this.gateway = gateway;
++    }
++
++    public String getNetmask() {
++        return netmask;
++    }
++
++    public void setNetmask(String netmask) {
++        this.netmask = netmask;
++    }
++
++    public String getDns1() {
++        return dns1;
++    }
++
++    public void setDns1(String dns1) {
++        this.dns1 = dns1;
++    }
++
++    public String getDns2() {
++        return dns2;
++    }
++
++    public void setDns2(String dns2) {
++        this.dns2 = dns2;
++    }
++
++    @Override
++    public int describeContents() {
++        return 0;
++    }
++
++    @Override
++    public void writeToParcel(Parcel dest, int flags) {
++        dest.writeString(ipAddress);
++        dest.writeString(gateway);
++        dest.writeString(netmask);
++        dest.writeString(dns1);
++        dest.writeString(dns2);
++    }
++}
+diff --git a/base/core/java/android/net/EthernetManager.java b/base/core/java/android/net/EthernetManager.java
+old mode 100644
+new mode 100755
+index f45737a..a351e26
+--- a/base/core/java/android/net/EthernetManager.java
++++ b/base/core/java/android/net/EthernetManager.java
+@@ -19,7 +19,6 @@ package android.net;
+ import android.content.Context;
+ import android.net.IEthernetManager;
+ import android.net.IEthernetServiceListener;
+-import android.net.IpConfiguration;
+ import android.os.Handler;
+ import android.os.Message;
+ import android.os.RemoteException;
+@@ -32,6 +31,9 @@ import java.util.ArrayList;
+  * @hide
+  */
+ public class EthernetManager {
++    public static final String ETHERNET_IP_MODE_STATIC = "manual";
++    public static final String ETHERNET_IP_MODE_DHCP = "dhcp";
++
+     private static final String TAG = "EthernetManager";
+     private static final int MSG_AVAILABILITY_CHANGED = 1000;
+
+@@ -149,4 +151,73 @@ public class EthernetManager {
+             }
+         }
+     }
++
++    public void reconnect() {
++        try {
++            mService.reconnect();
++        } catch (NullPointerException | RemoteException e) {
++        }
++    }
++
++    public void disconnect() {
++        try {
++            mService.disconnect();
++        } catch (NullPointerException | RemoteException e) {
++        }
++    }
++
++
++    public boolean isEthernetEnabled() {
++        try {
++            return mService.isEthernetEnabled();
++        } catch (NullPointerException | RemoteException e) {
++            return false;
++        }
++    }
++
++    public void setEthernetEnabled(boolean enabled) {
++        try {
++            mService.setEthernetEnabled(enabled);
++        } catch (NullPointerException | RemoteException e) {
++        }
++    }
++
++    public String getEthernetIPMode() {
++        try {
++            return mService.getEthernetIPMode();
++        } catch (NullPointerException | RemoteException e) {
++            return null;
++        }
++    }
++
++    public boolean isEthernetStaticMode() {
++        try {
++            return mService.isEthernetStaticMode();
++        } catch (NullPointerException | RemoteException e) {
++            return false;
++        }
++    }
++
++    public void setEthernetIPMode(String mode, EthernetInfo info) {
++        try {
++            mService.setEthernetIPMode(mode, info);
++        } catch (NullPointerException | RemoteException e) {
++        }
++    }
++
++    public EthernetInfo getManualSavedConifg() {
++        try {
++            return mService.getManualSavedConifg();
++        } catch (NullPointerException | RemoteException e) {
++            return null;
++        }
++    }
++
++    public EthernetInfo getEthernetInfo() {
++        try {
++            return mService.getEthernetInfo();
++        } catch (NullPointerException | RemoteException e) {
++            return null;
++        }
++    }
+ }
+diff --git a/base/core/java/android/net/IEthernetManager.aidl b/base/core/java/android/net/IEthernetManager.aidl
+old mode 100644
+new mode 100755
+index 7a92eb9..4d997a7
+--- a/base/core/java/android/net/IEthernetManager.aidl
++++ b/base/core/java/android/net/IEthernetManager.aidl
+@@ -18,6 +18,7 @@ package android.net;
+
+ import android.net.IpConfiguration;
+ import android.net.IEthernetServiceListener;
++import android.net.EthernetInfo;
+
+ /**
+  * Interface that answers queries about, and allows changing
+@@ -31,4 +32,13 @@ interface IEthernetManager
+     boolean isAvailable();
+     void addListener(in IEthernetServiceListener listener);
+     void removeListener(in IEthernetServiceListener listener);
++    void disconnect();
++    void reconnect();
++    boolean isEthernetEnabled();
++    void setEthernetEnabled(boolean enabled);
++    String getEthernetIPMode();
++    boolean isEthernetStaticMode();
++    void setEthernetIPMode(String mode, in EthernetInfo info);
++    EthernetInfo getManualSavedConifg();
++    EthernetInfo getEthernetInfo();
+ }
+diff --git a/base/core/java/android/provider/Settings.java b/base/core/java/android/provider/Settings.java
+index 5d80bb5..96a75ea 100755
+--- a/base/core/java/android/provider/Settings.java
++++ b/base/core/java/android/provider/Settings.java
+@@ -74,7 +74,6 @@ import java.util.Set;
+  * The Settings provider contains global system-level device preferences.
+  */
+ public final class Settings {
+-
+     // Intent actions for Settings
+
+     /**
+@@ -5953,6 +5952,35 @@ public final class Settings {
+      * explicitly modify through the system UI or specialized APIs for those values.
+      */
+     public static final class Global extends NameValueTable {
++        /**
++         * @hide
++         */
++        public static final String ETHERNET_ENABLED = "ethernet_enabled";
++        /**
++         * @hide
++         */
++        public static final String ETHERNET_IP_MODE = "ethernet_ip_mode";
++        /**
++         * @hide
++         */
++        public static final String ETHERNET_STATIC_IP = "ethernet_static_ip_address";
++        /**
++         * @hide
++         */
++        public static final String ETHERNET_STATIC_GATEWAY = "ethernet_static_gateway";
++        /**
++         * @hide
++         */
++        public static final String ETHERNET_STATIC_NETMASK = "ethernet_static_netmask";
++        /**
++         * @hide
++         */
++        public static final String ETHERNET_STATIC_DNS1 = "ethernet_static_dns1";
++        /**
++         * @hide
++         */
++        public static final String ETHERNET_STATIC_DNS2 = "ethernet_static_dns2";
++
+         public static final String SYS_PROP_SETTING_VERSION = "sys.settings_global_version";
+
+         /**
+diff --git a/base/core/java/com/android/internal/logging/MetricsConstants.java b/base/core/java/com/android/internal/logging/MetricsConstants.java
+old mode 100644
+new mode 100755
+index b90cb36..af9f20b
+--- a/base/core/java/com/android/internal/logging/MetricsConstants.java
++++ b/base/core/java/com/android/internal/logging/MetricsConstants.java
+@@ -262,7 +262,7 @@ public interface MetricsConstants {
+     public static final int TUNER_DEMO_MODE_ON = 236;
+     public static final int TUNER_BATTERY_PERCENTAGE = 237;
+     public static final int FUELGAUGE_INACTIVE_APPS = 238;
+-
++    public static final int ETHERNET = 239;
+     // These constants must match those in the analytic pipeline, do not edit.
+     // Add temporary values to the top of MetricsLogger instead.
+
+diff --git a/base/packages/SettingsProvider/res/values/defaults.xml b/base/packages/SettingsProvider/res/values/defaults.xml
+index c9dddb4..3f3e328 100755
+--- a/base/packages/SettingsProvider/res/values/defaults.xml
++++ b/base/packages/SettingsProvider/res/values/defaults.xml
+@@ -212,4 +212,25 @@
+
+     <!-- Default for Settings.Secure.NFC_PAYMENT_COMPONENT -->
+     <string name="def_nfc_payment_component"></string>
++
++    <!-- Default for Settings.Global.ETHERNET_ENABLED {0 -> disable, 1 -> enable}-->
++    <integer name="def_ethernet_enabled">1</integer>
++
++    <!-- Default for Settings.Global.ETHERNET_IP_MODE {dhcp, manual}-->
++    <string name="def_ethernet_ip_mode">dhcp</string>
++
++    <!-- Default for Settings.Global.ETHERNET_STATIC_IP-->
++    <string name="def_ethernet_static_ip"></string>
++
++    <!-- Default for Settings.Global.ETHERNET_STATIC_GATEWAY-->
++    <string name="def_ethernet_static_gateway"></string>
++
++    <!-- Default for Settings.Global.ETHERNET_STATIC_NETMASK-->
++    <string name="def_ethernet_static_mask">255.255.255.0</string>
++
++    <!-- Default for Settings.Global.ETHERNET_STATIC_DNS1-->
++    <string name="def_ethernet_static_dns1"></string>
++
++    <!-- Default for Settings.Global.ETHERNET_STATIC_DNS2-->
++    <string name="def_ethernet_static_dns2"></string>
+ </resources>
+diff --git a/base/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java b/base/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
+old mode 100644
+new mode 100755
+index 5a14967..ca927c5
+--- a/base/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
++++ b/base/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
+@@ -2710,6 +2710,26 @@ class DatabaseHelper extends SQLiteOpenHelper {
+             loadSetting(stmt, Settings.Global.ENHANCED_4G_MODE_ENABLED,
+                     ImsConfig.FeatureValueConstants.ON);
+
++            loadIntegerSetting(stmt, Global.ETHERNET_ENABLED,
++                    R.integer.def_ethernet_enabled);
++
++            loadStringSetting(stmt, Settings.Global.ETHERNET_IP_MODE,
++                    R.string.def_ethernet_ip_mode);
++
++            loadStringSetting(stmt, Settings.Global.ETHERNET_STATIC_IP,
++                    R.string.def_ethernet_static_ip);
++
++            loadStringSetting(stmt, Settings.Global.ETHERNET_STATIC_GATEWAY,
++                    R.string.def_ethernet_static_gateway);
++
++            loadStringSetting(stmt, Settings.Global.ETHERNET_STATIC_NETMASK,
++                    R.string.def_ethernet_static_mask);
++
++            loadStringSetting(stmt, Settings.Global.ETHERNET_STATIC_DNS1,
++                    R.string.def_ethernet_static_dns1);
++
++            loadStringSetting(stmt, Settings.Global.ETHERNET_STATIC_DNS2,
++                    R.string.def_ethernet_static_dns2);
+             /*
+              * IMPORTANT: Do not add any more upgrade steps here as the global,
+              * secure, and system settings are no longer stored in a database
+diff --git a/base/wifi/java/android/net/wifi/IWifiManager.aidl b/base/wifi/java/android/net/wifi/IWifiManager.aidl
+old mode 100644
+new mode 100755
+diff --git a/opt/net/ethernet/java/com/android/server/ethernet/EthernetNetworkFactory.java b/opt/net/ethernet/java/com/android/server/ethernet/EthernetNetworkFactory.java
+old mode 100644
+new mode 100755
+index 6074dda..36fa9c2
+--- a/opt/net/ethernet/java/com/android/server/ethernet/EthernetNetworkFactory.java
++++ b/opt/net/ethernet/java/com/android/server/ethernet/EthernetNetworkFactory.java
+@@ -100,6 +100,7 @@ class EthernetNetworkFactory {
+     private static boolean mLinkUp;
+     private NetworkInfo mNetworkInfo;
+     private LinkProperties mLinkProperties;
++    private Handler mHandler;
+
+     EthernetNetworkFactory(RemoteCallbackList<IEthernetServiceListener> listeners) {
+         mNetworkInfo = new NetworkInfo(ConnectivityManager.TYPE_ETHERNET, 0, NETWORK_TYPE, "");
+@@ -269,6 +270,12 @@ class EthernetNetworkFactory {
+
+                 if (config.getIpAssignment() == IpAssignment.STATIC) {
+                     if (!setStaticIpAddress(config.getStaticIpConfiguration())) {
++                        //if error then stop and restart
++                        if (mContext != null && mHandler != null) {
++                            Log.d(TAG, "Setting static ip failed now restart");
++                            stop();
++                            start(mContext, mHandler);
++                        }
+                         // We've already logged an error.
+                         return;
+                     }
+@@ -366,6 +373,7 @@ class EthernetNetworkFactory {
+         mFactory.register();
+
+         mContext = context;
++        mHandler = target;
+
+         // Start tracking interface change events.
+         mInterfaceObserver = new InterfaceObserver();
+@@ -472,4 +480,15 @@ class EthernetNetworkFactory {
+         pw.println("LinkProperties: " + mLinkProperties);
+         pw.println("NetworkAgent: " + mNetworkAgent);
+     }
++
++    public void changeInterfaceState(boolean up) {
++        if (!TextUtils.isEmpty(mIface)) {
++            updateInterfaceState(mIface, up);
++        }
++    }
++
++    public LinkProperties getEthernetInfo() {
++        return mLinkProperties;
++    }
++
+ }
+diff --git a/opt/net/ethernet/java/com/android/server/ethernet/EthernetServiceImpl.java b/opt/net/ethernet/java/com/android/server/ethernet/EthernetServiceImpl.java
+old mode 100644
+new mode 100755
+index 42996d6..c47f687
+--- a/opt/net/ethernet/java/com/android/server/ethernet/EthernetServiceImpl.java
++++ b/opt/net/ethernet/java/com/android/server/ethernet/EthernetServiceImpl.java
+@@ -16,19 +16,25 @@
+
+ package com.android.server.ethernet;
+
++import android.content.ContentResolver;
+ import android.content.Context;
+ import android.content.pm.PackageManager;
++import android.net.EthernetInfo;
++import android.net.EthernetManager;
+ import android.net.IEthernetManager;
+ import android.net.IEthernetServiceListener;
+ import android.net.IpConfiguration;
+-import android.net.IpConfiguration.IpAssignment;
+-import android.net.IpConfiguration.ProxySettings;
++import android.net.LinkAddress;
++import android.net.LinkProperties;
++import android.net.RouteInfo;
++import android.net.StaticIpConfiguration;
+ import android.os.Binder;
+ import android.os.Handler;
+ import android.os.HandlerThread;
++import android.os.Looper;
+ import android.os.RemoteCallbackList;
+-import android.os.RemoteException;
+ import android.provider.Settings;
++import android.text.TextUtils;
+ import android.util.Log;
+ import android.util.PrintWriterPrinter;
+
+@@ -36,7 +42,21 @@ import com.android.internal.util.IndentingPrintWriter;
+
+ import java.io.FileDescriptor;
+ import java.io.PrintWriter;
++import java.net.InetAddress;
++import java.net.UnknownHostException;
++import java.util.List;
+ import java.util.concurrent.atomic.AtomicBoolean;
++import java.util.regex.Matcher;
++import java.util.regex.Pattern;
++
++import static android.provider.Settings.Global.ETHERNET_ENABLED;
++import static android.provider.Settings.Global.ETHERNET_IP_MODE;
++import static android.provider.Settings.Global.ETHERNET_STATIC_DNS1;
++import static android.provider.Settings.Global.ETHERNET_STATIC_DNS2;
++import static android.provider.Settings.Global.ETHERNET_STATIC_GATEWAY;
++import static android.provider.Settings.Global.ETHERNET_STATIC_IP;
++import static android.provider.Settings.Global.ETHERNET_STATIC_NETMASK;
++
+
+ /**
+  * EthernetServiceImpl handles remote Ethernet operation requests by implementing
+@@ -87,13 +107,16 @@ public class EthernetServiceImpl extends IEthernetManager.Stub {
+         handlerThread.start();
+         mHandler = new Handler(handlerThread.getLooper());
+
+-        mTracker.start(mContext, mHandler);
+-
+-        mStarted.set(true);
++        if (isEthernetEnabled()) {
++            mTracker.start(mContext, mHandler);
++            mStarted.set(true);
++        }
+     }
+
++
+     /**
+      * Get Ethernet configuration
++     *
+      * @return the Ethernet Configuration, contained in {@link IpConfiguration}.
+      */
+     @Override
+@@ -113,7 +136,6 @@ public class EthernetServiceImpl extends IEthernetManager.Stub {
+         if (!mStarted.get()) {
+             Log.w(TAG, "System isn't ready enough to change ethernet configuration");
+         }
+-
+         enforceConnectivityInternalPermission();
+
+         synchronized (mIpConfiguration) {
+@@ -121,6 +143,7 @@ public class EthernetServiceImpl extends IEthernetManager.Stub {
+
+             // TODO: this does not check proxy settings, gateways, etc.
+             // Fix this by making IpConfiguration a complete representation of static configuration.
++            Log.e(TAG, "!config.equals(mIpConfiguration): " + !config.equals(mIpConfiguration));
+             if (!config.equals(mIpConfiguration)) {
+                 mIpConfiguration = new IpConfiguration(config);
+                 mTracker.stop();
+@@ -141,6 +164,7 @@ public class EthernetServiceImpl extends IEthernetManager.Stub {
+
+     /**
+      * Addes a listener.
++     *
+      * @param listener A {@link IEthernetServiceListener} to add.
+      */
+     public void addListener(IEthernetServiceListener listener) {
+@@ -153,6 +177,7 @@ public class EthernetServiceImpl extends IEthernetManager.Stub {
+
+     /**
+      * Removes a listener.
++     *
+      * @param listener A {@link IEthernetServiceListener} to remove.
+      */
+     public void removeListener(IEthernetServiceListener listener) {
+@@ -190,4 +215,208 @@ public class EthernetServiceImpl extends IEthernetManager.Stub {
+         mHandler.dump(new PrintWriterPrinter(pw), "EthernetServiceImpl");
+         pw.decreaseIndent();
+     }
++
++    @Override
++    public void reconnect() {
++        new Thread(new Runnable() {
++            @Override
++            public void run() {
++                Looper.prepare();
++                mTracker.start(mContext, mHandler);
++                mStarted.set(true);
++                Looper.loop();
++            }
++        }).start();
++    }
++
++    @Override
++    public void disconnect() {
++        new Thread(new Runnable() {
++            @Override
++            public void run() {
++                Looper.prepare();
++                mTracker.stop();
++                mStarted.set(false);
++                Looper.loop();
++            }
++        }).start();
++    }
++
++    @Override
++    public boolean isEthernetEnabled() {
++        return Settings.Global.getInt(mContext.getContentResolver(), ETHERNET_ENABLED, 1) == 1;
++    }
++
++    @Override
++    public void setEthernetEnabled(boolean enabled) {
++        if (enabled) {
++            reconnect();
++            Settings.Global.putInt(mContext.getContentResolver(), ETHERNET_ENABLED, 1);
++        } else {
++            disconnect();
++            Settings.Global.putInt(mContext.getContentResolver(), ETHERNET_ENABLED, 0);
++        }
++    }
++
++    @Override
++    public String getEthernetIPMode() {
++        return Settings.Global.getString(mContext.getContentResolver(), ETHERNET_IP_MODE);
++    }
++
++    @Override
++    public boolean isEthernetStaticMode() {
++        return getEthernetIPMode().equals(EthernetManager.ETHERNET_IP_MODE_STATIC);
++    }
++
++    @Override
++    public void setEthernetIPMode(String mode, EthernetInfo info) {
++        Log.e(TAG, "String mode: " + mode + "mStarted.get(): " + mStarted.get());
++        mTracker.changeInterfaceState(false);
++        ContentResolver contentResolver = mContext.getContentResolver();
++        IpConfiguration ipConfiguration;
++        if (EthernetManager.ETHERNET_IP_MODE_DHCP.equals(mode)) {
++            ipConfiguration = new IpConfiguration(IpConfiguration.IpAssignment.DHCP, IpConfiguration.ProxySettings.NONE, null, null);
++            Settings.Global.putString(contentResolver, ETHERNET_IP_MODE, EthernetManager.ETHERNET_IP_MODE_DHCP);
++
++        } else if (EthernetManager.ETHERNET_IP_MODE_STATIC.equals(mode)) {
++            String ipAddress = info.getIpAddress();
++            String gateWay = info.getGateway();
++            String netMask = info.getNetmask();
++            String dns1 = info.getDns1();
++            String dns2 = info.getDns2();
++
++            StaticIpConfiguration staticIpConfiguration = new StaticIpConfiguration();
++            try {
++                staticIpConfiguration.domains = netMask;
++                staticIpConfiguration.gateway = InetAddress.getByName(gateWay);
++                staticIpConfiguration.ipAddress = new LinkAddress(InetAddress.getByName(ipAddress), 24);
++                staticIpConfiguration.dnsServers.add(InetAddress.getByName(dns1));
++                staticIpConfiguration.dnsServers.add(InetAddress.getByName(dns2));
++            } catch (UnknownHostException e) {
++                e.printStackTrace();
++            }
++            ipConfiguration = new IpConfiguration(IpConfiguration.IpAssignment.STATIC, IpConfiguration.ProxySettings.NONE, staticIpConfiguration, null);
++
++            Settings.Global.putString(contentResolver, ETHERNET_STATIC_IP, ipAddress);
++            Settings.Global.putString(contentResolver, ETHERNET_STATIC_GATEWAY, gateWay);
++            Settings.Global.putString(contentResolver, ETHERNET_STATIC_NETMASK, netMask);
++            Settings.Global.putString(contentResolver, ETHERNET_STATIC_DNS1, dns1);
++            Settings.Global.putString(contentResolver, ETHERNET_STATIC_DNS2, dns2);
++            Settings.Global.putString(contentResolver, ETHERNET_IP_MODE, EthernetManager.ETHERNET_IP_MODE_STATIC);
++        } else {
++            ipConfiguration = mEthernetConfigStore.readIpAndProxyConfigurations();
++        }
++        setConfiguration(ipConfiguration);
++    }
++
++    @Override
++    public EthernetInfo getManualSavedConifg() {
++        ContentResolver contentResolver = mContext.getContentResolver();
++        String ip = Settings.Global.getString(contentResolver, ETHERNET_STATIC_IP);
++        String gateway = Settings.Global.getString(contentResolver, ETHERNET_STATIC_GATEWAY);
++        String netmask = Settings.Global.getString(contentResolver, ETHERNET_STATIC_NETMASK);
++        String dns1 = Settings.Global.getString(contentResolver, ETHERNET_STATIC_DNS1);
++        String dns2 = Settings.Global.getString(contentResolver, ETHERNET_STATIC_DNS2);
++
++        EthernetInfo info = new EthernetInfo();
++        info.setIpAddress(ip);
++        info.setGateway(gateway);
++        info.setNetmask(netmask);
++        info.setDns1(dns1);
++        info.setDns2(dns2);
++        return info;
++    }
++
++    public EthernetInfo getEthernetInfo() {
++        String ipAddress = "0.0.0.0";
++        String gateway = "0.0.0.0";
++        String netmask = "0.0.0.0";
++        String dns1 = "0.0.0.0";
++        String dns2 = "0.0.0.0";
++
++        Pattern pattern = Pattern.compile("\\d+.\\d+.\\d+.\\d+");
++        Matcher matcher;
++
++        LinkProperties linkProperties = mTracker.getEthernetInfo();
++        Log.e(TAG, "linkProperties: " + linkProperties.toString());
++        List<LinkAddress> ipList = linkProperties.getLinkAddresses();
++        if (ipList != null && ipList.size() > 0) {
++            String linkAddresses = ipList.toString();
++            Log.e(TAG, "linkAddresses: " + linkAddresses);
++            if (!TextUtils.isEmpty(linkAddresses) && linkAddresses.length() > 1) {
++                ipAddress = linkAddresses.substring(1, linkAddresses.lastIndexOf("/"));
++                matcher = pattern.matcher(ipAddress);
++                while (matcher.find()) {
++                    if (!TextUtils.isEmpty(matcher.group())) {
++                        ipAddress = matcher.group();
++                    }
++                }
++            }
++
++            Log.e(TAG, "netmask: " + ipList.get(0).getPrefixLength());
++            if (ipList.get(0) != null) {
++                netmask = calcMaskByPrefixLength(ipList.get(0).getPrefixLength());
++            }
++        }
++
++        List<RouteInfo> routeList = linkProperties.getRoutes();
++        if (routeList != null && routeList.size() > 0) {
++            String routes = routeList.toString();
++            Log.e(TAG, "routes: " + routes);
++            matcher = pattern.matcher(routes);
++            while (matcher.find()) {
++                if (!TextUtils.isEmpty(matcher.group())) {
++                    gateway = matcher.group();
++                }
++            }
++        }
++
++        List<InetAddress> dnsList= linkProperties.getDnsServers();
++        if (dnsList != null && dnsList.size() > 0) {
++            String dnsServers = dnsList.toString();
++            Log.e(TAG, "dnsServers: " + dnsServers);
++            matcher = pattern.matcher(dnsServers);
++            int i = 0;
++            while (matcher.find()) {
++                i++;
++                if (!TextUtils.isEmpty(matcher.group())) {
++                    if (i == 1) {
++                        dns1 = matcher.group();
++                    } else if (i == 2) {
++                        dns2 = matcher.group();
++                    }
++                }
++            }
++        }
++
++        EthernetInfo info = new EthernetInfo();
++        info.setIpAddress(ipAddress);
++        info.setGateway(gateway);
++        info.setNetmask(netmask);
++        info.setDns1(dns1);
++        info.setDns2(dns2);
++        return info;
++    }
++
++    public static String calcMaskByPrefixLength(int length) {
++
++        int mask = 0xffffffff << (32 - length);
++        int partsNum = 4;
++        int bitsOfPart = 8;
++        int maskParts[] = new int[partsNum];
++        int selector = 0x000000ff;
++
++        for (int i = 0; i < maskParts.length; i++) {
++            int pos = maskParts.length - 1 - i;
++            maskParts[pos] = (mask >> (i * bitsOfPart)) & selector;
++        }
++
++        String result = "";
++        result = result + maskParts[0];
++        for (int i = 1; i < maskParts.length; i++) {
++            result = result + "." + maskParts[i];
++        }
++        return result;
++    }
++
+ }

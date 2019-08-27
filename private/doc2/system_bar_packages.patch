@@ -1,0 +1,124 @@
+diff --git a/apps/Settings/res/values-zh-rCN/strings.xml b/apps/Settings/res/values-zh-rCN/strings.xml
+old mode 100644
+new mode 100755
+index 2defc44..9601d8e
+--- a/apps/Settings/res/values-zh-rCN/strings.xml
++++ b/apps/Settings/res/values-zh-rCN/strings.xml
+@@ -2903,4 +2903,8 @@
+   </string-array>
+     <string name="picture_color_mode" msgid="4560755008730283695">"图片颜色模式"</string>
+     <string name="picture_color_mode_desc" msgid="1141891467675548590">"使用 sRGB"</string>
++    <!-- System Bar settings title-->
++    <string name="system_bar_settings_title">系统栏显示</string>
++    <!-- System Bar settings summary-->
++    <string name="system_bar_settings_summary">控制系统栏显示或隐藏</string>
+ </resources>
+diff --git a/apps/Settings/res/values/strings.xml b/apps/Settings/res/values/strings.xml
+old mode 100644
+new mode 100755
+index ddddab1..1dbbbef
+--- a/apps/Settings/res/values/strings.xml
++++ b/apps/Settings/res/values/strings.xml
+@@ -7045,4 +7045,9 @@
+
+     <!-- Description of feature to change color setting for the display [CHAR LIMIT=NONE] -->
+     <string name="picture_color_mode_desc">Use sRGB</string>
++
++    <!-- System Bar settings title-->
++    <string name="system_bar_settings_title">System Bar Display</string>
++    <!-- System Bar settings summary-->
++    <string name="system_bar_settings_summary">Control System Bar show or hide</string>
+ </resources>
+diff --git a/apps/Settings/res/xml/display_settings.xml b/apps/Settings/res/xml/display_settings.xml
+old mode 100644
+new mode 100755
+index 7150150..cd473ac
+--- a/apps/Settings/res/xml/display_settings.xml
++++ b/apps/Settings/res/xml/display_settings.xml
+@@ -110,4 +110,10 @@
+                 settings:keywords="@string/keywords_display_cast_screen"
+                 android:fragment="com.android.settings.wfd.WifiDisplaySettings" />
+
++        <SwitchPreference
++            android:key="system_bar"
++            android:title="@string/system_bar_settings_title"
++            android:summary="@string/system_bar_settings_summary"
++            android:persistent="false" />
++
+ </PreferenceScreen>
+diff --git a/apps/Settings/src/com/android/settings/DisplaySettings.java b/apps/Settings/src/com/android/settings/DisplaySettings.java
+old mode 100644
+new mode 100755
+index de15d4c..7a95155
+--- a/apps/Settings/src/com/android/settings/DisplaySettings.java
++++ b/apps/Settings/src/com/android/settings/DisplaySettings.java
+@@ -31,6 +31,7 @@ import static android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE;
+ import static android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
+ import static android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+ import static android.provider.Settings.System.SCREEN_OFF_TIMEOUT;
++import static android.provider.Settings.System.SYSTEM_BAR_DISPLAY;
+
+ import android.app.Activity;
+ import android.app.ActivityManagerNative;
+@@ -39,6 +40,7 @@ import android.app.UiModeManager;
+ import android.app.admin.DevicePolicyManager;
+ import android.content.ContentResolver;
+ import android.content.Context;
++import android.content.Intent;
+ import android.content.res.Configuration;
+ import android.content.res.Resources;
+ import android.hardware.Sensor;
+@@ -79,6 +81,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
+     private static final String KEY_CAMERA_GESTURE = "camera_gesture";
+     private static final String KEY_CAMERA_DOUBLE_TAP_POWER_GESTURE
+             = "camera_double_tap_power_gesture";
++    private static final String KEY_SYSTEM_BAR = "system_bar";
+
+     private static final int DLG_GLOBAL_CHANGE_WARNING = 1;
+
+@@ -95,6 +98,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
+     private SwitchPreference mAutoBrightnessPreference;
+     private SwitchPreference mCameraGesturePreference;
+     private SwitchPreference mCameraDoubleTapPowerGesturePreference;
++    private SwitchPreference mSystemBarPreference;
+
+     @Override
+     protected int getMetricsCategory() {
+@@ -217,6 +221,11 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
+             mNightModePreference.setValue(String.valueOf(currentNightMode));
+             mNightModePreference.setOnPreferenceChangeListener(this);
+         }
++
++        mSystemBarPreference = (SwitchPreference) findPreference(KEY_SYSTEM_BAR);
++        if (mSystemBarPreference != null) {
++            mSystemBarPreference.setOnPreferenceChangeListener(this);
++        }
+     }
+
+     private static boolean allowAllRotations(Context context) {
+@@ -417,6 +426,13 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
+                     getContentResolver(), CAMERA_DOUBLE_TAP_POWER_GESTURE_DISABLED, 0);
+             mCameraDoubleTapPowerGesturePreference.setChecked(value == 0);
+         }
++
++        // update system bar
++        if (mSystemBarPreference != null) {
++            int value = Settings.System.getInt(getContentResolver(), SYSTEM_BAR_DISPLAY, 1);
++            mSystemBarPreference.setChecked(value == 1);
++        }
++
+     }
+
+     private void updateScreenSaverSummary() {
+@@ -492,6 +508,11 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
+                 Log.e(TAG, "could not persist night mode setting", e);
+             }
+         }
++        if (preference == mSystemBarPreference) {
++            boolean value = (Boolean) objValue;
++            getContext().sendBroadcast(new Intent(value ? Intent.ACTION_SYSTEM_BAR_SHOW : Intent.ACTION_SYSTEM_BAR_HIDE));
++            Settings.System.putInt(getContentResolver(), SYSTEM_BAR_DISPLAY, value ? 1 : 0);
++        }
+         return true;
+     }
+

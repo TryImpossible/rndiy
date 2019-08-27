@@ -1,0 +1,163 @@
+diff --git a/apps/Settings/res/values-zh-rCN/arrays.xml b/apps/Settings/res/values-zh-rCN/arrays.xml
+index 6e67156..ce3522d 100755
+--- a/apps/Settings/res/values-zh-rCN/arrays.xml
++++ b/apps/Settings/res/values-zh-rCN/arrays.xml
+@@ -572,11 +572,4 @@
+     <item>"动态获取"</item>
+     <item>"静态地址"</item>
+   </string-array>
+-  <!-- Screen rotate settings.  These are shown in a list dialog. -->
+-  <string-array name="screen_rotate_entries">
+-    <item>0</item>
+-    <item>90</item>
+-    <item>180</item>
+-    <item>270</item>
+-  </string-array>
+ </resources>
+diff --git a/apps/Settings/res/values-zh-rCN/strings.xml b/apps/Settings/res/values-zh-rCN/strings.xml
+index 78c8c3b..94d8bd9 100755
+--- a/apps/Settings/res/values-zh-rCN/strings.xml
++++ b/apps/Settings/res/values-zh-rCN/strings.xml
+@@ -2924,8 +2924,4 @@
+     <string name="system_bar_settings_title">系统栏显示</string>
+     <!-- System Bar settings summary-->
+     <string name="system_bar_settings_summary">控制系统栏显示或隐藏</string>
+-    <!-- Screen rotate title-->
+-    <string name="screen_rotate_title">屏幕旋转</string>
+-    <!-- Screen rotate summary-->
+-    <string name="screen_rotate_summary">控制屏幕方向</string>
+ </resources>
+diff --git a/apps/Settings/res/values/arrays.xml b/apps/Settings/res/values/arrays.xml
+index 549e89a..afacb9d 100755
+--- a/apps/Settings/res/values/arrays.xml
++++ b/apps/Settings/res/values/arrays.xml
+@@ -1401,24 +1401,4 @@
+         <item>dhcp</item>
+         <item>manual</item>
+     </string-array>
+-
+-    <!-- Screen rotate settings.  These are shown in a list dialog. -->
+-    <string-array name="screen_rotate_entries">
+-        <item>0</item>
+-        <item>90</item>
+-        <item>180</item>
+-        <item>270</item>
+-    </string-array>
+-
+-    <!-- Do not translate. -->
+-    <string-array name="screen_rotate_values" translatable="false">
+-        <!-- Do not translate. -->
+-        <item>0</item>
+-        <!-- Do not translate. -->
+-        <item>90</item>
+-        <!-- Do not translate. -->
+-        <item>180</item>
+-        <!-- Do not translate. -->
+-        <item>270</item>
+-    </string-array>
+ </resources>
+diff --git a/apps/Settings/res/values/strings.xml b/apps/Settings/res/values/strings.xml
+index a755dfd..d61a857 100755
+--- a/apps/Settings/res/values/strings.xml
++++ b/apps/Settings/res/values/strings.xml
+@@ -7067,8 +7067,4 @@
+     <string name="system_bar_settings_title">System Bar Display</string>
+     <!-- System Bar settings summary-->
+     <string name="system_bar_settings_summary">Control System Bar show or hide</string>
+-    <!-- Screen rotate title-->
+-    <string name="screen_rotate_title">Screen rotate</string>
+-    <!-- Screen rotate summary-->
+-    <string name="screen_rotate_summary">Control screen orientation</string>
+ </resources>
+diff --git a/apps/Settings/res/xml/display_settings.xml b/apps/Settings/res/xml/display_settings.xml
+index 4e67b2b..cd473ac 100755
+--- a/apps/Settings/res/xml/display_settings.xml
++++ b/apps/Settings/res/xml/display_settings.xml
+@@ -104,14 +104,6 @@
+                 android:key="auto_rotate"
+                 android:title="@string/display_auto_rotate_title" />
+ 
+-        <ListPreference
+-            android:key="screen_rotate"
+-            android:title="@string/screen_rotate_title"
+-            android:summary="@string/screen_rotate_summary"
+-            android:persistent="false"
+-            android:entries="@array/screen_rotate_entries"
+-            android:entryValues="@array/screen_rotate_values" />
+-
+         <PreferenceScreen
+                 android:key="wifi_display"
+                 android:title="@string/wifi_display_settings_title"
+diff --git a/apps/Settings/src/com/android/settings/DisplaySettings.java b/apps/Settings/src/com/android/settings/DisplaySettings.java
+index 0c0c952..d521758 100755
+--- a/apps/Settings/src/com/android/settings/DisplaySettings.java
++++ b/apps/Settings/src/com/android/settings/DisplaySettings.java
+@@ -58,7 +58,6 @@ import android.provider.SearchIndexableResource;
+ import android.provider.Settings;
+ import android.text.TextUtils;
+ import android.util.Log;
+-import android.view.Surface;
+ 
+ import java.util.ArrayList;
+ import java.util.List;
+@@ -83,7 +82,6 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
+     private static final String KEY_CAMERA_DOUBLE_TAP_POWER_GESTURE
+             = "camera_double_tap_power_gesture";
+     private static final String KEY_SYSTEM_BAR = "system_bar";
+-    private static final String KEY_SCREEN_ROTATE = "screen_rotate";
+ 
+     private static final int DLG_GLOBAL_CHANGE_WARNING = 1;
+ 
+@@ -101,7 +99,6 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
+     private SwitchPreference mCameraGesturePreference;
+     private SwitchPreference mCameraDoubleTapPowerGesturePreference;
+     private SwitchPreference mSystemBarPreference;
+-    private ListPreference mScreenRotatePreference;
+ 
+     @Override
+     protected int getMetricsCategory() {
+@@ -229,13 +226,6 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
+         if (mSystemBarPreference != null) {
+             mSystemBarPreference.setOnPreferenceChangeListener(this);
+         }
+-
+-        mScreenRotatePreference = (ListPreference) findPreference(KEY_SCREEN_ROTATE);
+-        if (mScreenRotatePreference != null) {
+-            mScreenRotatePreference.setOnPreferenceChangeListener(this);
+-        }
+-        int index = Settings.System.getInt(getContentResolver(), Settings.System.USER_ROTATION, 0);
+-        mScreenRotatePreference.setValueIndex(index);
+     }
+ 
+     private static boolean allowAllRotations(Context context) {
+@@ -479,20 +469,6 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
+         }
+     }
+ 
+-    public void setScreenRotation(String value) {
+-        int rotation = 0;
+-        if (value.equals("0")) {
+-            rotation = Surface.ROTATION_0;
+-        } else if (value.equals("90")) {
+-            rotation = Surface.ROTATION_90;
+-        } else if (value.equals("180")) {
+-            rotation = Surface.ROTATION_180;
+-        } else if (value.equals("270")) {
+-            rotation = Surface.ROTATION_270;
+-        }
+-        Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, rotation);
+-    }
+-
+     @Override
+     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+         return super.onPreferenceTreeClick(preferenceScreen, preference);
+@@ -555,9 +531,6 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
+             getContext().sendBroadcast(new Intent(value ? Intent.ACTION_SYSTEM_BAR_SHOW : Intent.ACTION_SYSTEM_BAR_HIDE));
+             Settings.System.putInt(getContentResolver(), SYSTEM_BAR_DISPLAY, value ? 1 : 0);
+         }
+-        if (key.equals(KEY_SCREEN_ROTATE)) {
+-            setScreenRotation((String) objValue);
+-        }
+         return true;
+     }
+ 

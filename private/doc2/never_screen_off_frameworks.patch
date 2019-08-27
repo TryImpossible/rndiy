@@ -1,0 +1,51 @@
+diff --git a/base/packages/SettingsProvider/res/values/defaults.xml b/base/packages/SettingsProvider/res/values/defaults.xml
+old mode 100644
+new mode 100755
+index 1cd2908..c9dddb4
+--- a/base/packages/SettingsProvider/res/values/defaults.xml
++++ b/base/packages/SettingsProvider/res/values/defaults.xml
+@@ -18,7 +18,7 @@
+ -->
+ <resources>
+     <bool name="def_dim_screen">true</bool>
+-    <integer name="def_screen_off_timeout">60000</integer>
++    <integer name="def_screen_off_timeout">0</integer>
+     <integer name="def_sleep_timeout">-1</integer>
+     <bool name="def_airplane_mode_on">false</bool>
+     <bool name="def_theater_mode_on">false</bool>
+diff --git a/base/services/core/java/com/android/server/power/PowerManagerService.java b/base/services/core/java/com/android/server/power/PowerManagerService.java
+old mode 100644
+new mode 100755
+index f7a8970..c949577
+--- a/base/services/core/java/com/android/server/power/PowerManagerService.java
++++ b/base/services/core/java/com/android/server/power/PowerManagerService.java
+@@ -17,6 +17,7 @@
+ package com.android.server.power;
+
+ import android.app.ActivityManager;
++import android.util.Log;
+ import android.util.SparseIntArray;
+ import com.android.internal.app.IAppOpsService;
+ import com.android.internal.app.IBatteryStats;
+@@ -1611,6 +1612,7 @@ public final class PowerManagerService extends SystemService
+     }
+
+     private int getScreenOffTimeoutLocked(int sleepTimeout) {
++        int noSleepTimeout = 0;
+         int timeout = mScreenOffTimeoutSetting;
+         if (isMaximumScreenOffTimeoutFromDeviceAdminEnforcedLocked()) {
+             timeout = Math.min(timeout, mMaximumScreenOffTimeoutFromDeviceAdmin);
+@@ -1621,6 +1623,13 @@ public final class PowerManagerService extends SystemService
+         if (sleepTimeout >= 0) {
+             timeout = Math.min(timeout, sleepTimeout);
+         }
++        /* never screen off begin */
++        noSleepTimeout = mScreenOffTimeoutSetting;
++        if (noSleepTimeout == 0) {
++            noSleepTimeout = mMaximumScreenOffTimeoutFromDeviceAdmin;
++            return Math.max(noSleepTimeout, mMaximumScreenOffTimeoutFromDeviceAdmin);
++        }
++        /* never screen off end */
+         return Math.max(timeout, mMinimumScreenOffTimeoutConfig);
+     }
+

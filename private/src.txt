@@ -1,0 +1,29 @@
+"react": "16.8.3",
+"react-native": "0.59.0-rc.3",
+
+src/
+├── components
+│   ├── UI
+│   └── widgets
+├── configs
+├── modules
+├── navigators
+├── redux
+│   ├── actions
+│   ├── reducers
+│   └── store
+├── resources
+│   ├── i18n
+│   ├── images
+│   ├── svg
+│   └── themes
+│       └── default
+├── screens
+├── services
+└── utilities
+
+19 directories, 0 files
+
+
+"react": "16.8.1",
+"react-native": "0.59.0-rc.2"

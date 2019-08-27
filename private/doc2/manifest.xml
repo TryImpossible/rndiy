@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<manifest>
+    <remote name="origin" fetch="." />  <!-- ".", 表示使用repo init -u url里的url,这里指 git@192.168.1.52:android-x86-6.0/ -->
+    <default remote="origin" revision="master"/>
+    <project path="abi" name="abi"/>
+    <project path="art" name="art"/>
+    <project path="bionic" name="bionic"/>
+    <project path="bootable" name="bootable"/>
+    <project path="build" name="build">
+      <copyfile dest="Makefile" src="core/root.mk"/>
+    </project>
+    <project path="dalvik" name="dalvik"/>
+    <project path="development" name="development"/>
+    <project path="device" name="device"/>
+    <project path="external" name="external"/>
+    <project path="frameworks" name="frameworks"/>
+    <project path="hardware" name="hardware"/>
+    <project path="kernel" name="kernel"/>
+    <project path="libcore" name="libcore"/>
+    <project path="libnativehelper" name="libnativehelper"/>
+    <project path="ndk" name="ndk"/>
+    <project path="packages" name="packages" />
+    <project path="platform_testing" name="platform_testing"/>
+    <project path="prebuilts" name="prebuilts"/>
+    <project path="sdk" name="sdk"/>
+    <project path="system" name="system"/>
+</manifest>

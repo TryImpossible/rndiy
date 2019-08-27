@@ -1,0 +1,7 @@
+src/resources/i18n/
+├── en.js
+├── index.js
+├── zh-Hans.js
+└── zh-Hant.js
+
+0 directories, 4 files
