@@ -9,6 +9,6 @@ const MainTab = createBottomTabNavigator({
 });
 
 export default createDrawerNavigator({
-  Main: MainTab,
+  MainTab,
   Drawer
 });

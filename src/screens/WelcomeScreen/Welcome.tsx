@@ -20,7 +20,7 @@ class Welcome extends PureComponent<NavigationScreenProps, {}> {
 
   componentDidMount() {
     const { navigation } = this.props;
-    this.timer = setTimeout(() => navigation.navigate('Main'), 3000);
+    this.timer = setTimeout(() => navigation.navigate('Modal'), 3000);
   }
 
   componentWillUnmount() {

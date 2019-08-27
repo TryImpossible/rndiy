@@ -10,15 +10,14 @@ const styles = StyleSheet.create({
   }
 });
 
-class Mine extends PureComponent<NavigationScreenProps, {}> {
+class Modal extends PureComponent<NavigationScreenProps, {}> {
   render() {
-    const { navigation } = this.props;
     return (
       <View style={styles.container}>
-        <Text onPress={() => navigation.navigate('Modal')}>我的</Text>
+        <Text>Modal</Text>
       </View>
     );
   }
 }
 
-export default Mine;
+export default Modal;
