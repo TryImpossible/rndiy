@@ -21,7 +21,7 @@
     "detox-android-release": "detox build --configuration android.emu.release && detox test --loglevel verbose --configuration android.emu.release"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "react": "16.6.3",
     "react-native": "0.58.6",
     "react-native-gesture-handler": "^1.1.0",
